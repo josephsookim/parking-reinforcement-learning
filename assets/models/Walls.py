@@ -41,7 +41,23 @@ def getWalls():
         walls.append(Wall(i, 300, i, 400))
 
     # Lower Left Parking Lot
+    walls.append(Wall(200, 700, 650, 700))
+
+    for i in range(200, 650 + 1, 50):
+        # Top Side
+        walls.append(Wall(i, 700, i, 600))
+
+        # Bottom Side
+        walls.append(Wall(i, 700, i, 800))
 
     # Lower Right Parking Lot
+    walls.append(Wall(850, 700, 1300, 700))
+
+    for i in range(850, 1300 + 1, 50):
+        # Top Side
+        walls.append(Wall(i, 700, i, 600))
+
+        # Bottom Side
+        walls.append(Wall(i, 700, i, 800))
 
     return walls
