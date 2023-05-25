@@ -15,11 +15,11 @@ class ParkingEnv:
         pygame.init()
 
         self.fps = 120
-        self.width = 1000
-        self.height = 600
+        self.width = 1500
+        self.height = 1000
 
         self.screen = pygame.display.set_mode((self.width, self.height))
-        pygame.display.set_caption("RACING DQN")
+        pygame.display.set_caption("Parking PPO")
         # self.back_image = pygame.image.load("track.png").convert()
         # self.back_rect = self.back_image.get_rect().move(0, 0)
         self.action_space = None

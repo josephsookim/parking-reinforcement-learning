@@ -20,7 +20,28 @@ class Wall:
 def getWalls():
     walls = []
 
-    wall1 = Wall(12, 451, 15, 130)
-    walls.append(wall1)
+    # Upper Left Parking Lot
+    walls.append(Wall(200, 300, 650, 300))
+
+    for i in range(200, 650 + 1, 50):
+        # Top Side
+        walls.append(Wall(i, 300, i, 200))
+
+        # Bottom Side
+        walls.append(Wall(i, 300, i, 400))
+
+    # Upper Right Parking Lot
+    walls.append(Wall(850, 300, 1300, 300))
+
+    for i in range(850, 1300 + 1, 50):
+        # Top Side
+        walls.append(Wall(i, 300, i, 200))
+
+        # Bottom Side
+        walls.append(Wall(i, 300, i, 400))
+
+    # Lower Left Parking Lot
+
+    # Lower Right Parking Lot
 
     return walls
