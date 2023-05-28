@@ -23,15 +23,17 @@ class Ray:
         x4 = self.x + vec.x
         y4 = self.y + vec.y
 
-        den = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4)
+        denom = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4)
 
-        if (den == 0):
-            den = 0
+        if (denom == 0):
+            denom = 0
         else:
-            t = ((x1 - x3) * (y3 - y4) - (y1 - y3) * (x3 - x4)) / den
-            u = -((x1 - x2) * (y1 - y3) - (y1 - y2) * (x1 - x3)) / den
+            t = ((x1 - x3) * (y3 - y4) - (y1 - y3) * (x3 - x4)) / denom
+            u = -((x1 - x2) * (y1 - y3) - (y1 - y2) * (x1 - x3)) / denom
 
             if t > 0 and t < 1 and u < 1 and u > 0:
                 pt = Point(math.floor(x1 + t * (x2 - x1)),
                            math.floor(y1 + t * (y2 - y1)))
+
+                # intersection point
                 return (pt)
