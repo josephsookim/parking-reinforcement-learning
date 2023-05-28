@@ -10,6 +10,7 @@ from assets.utils.helpers import rotate, rotateRect, distance
 class Car:
     def __init__(self, x: int, y: int):
         # Passed parameters
+        self.pt = Point(x, y)
         self.x = x
         self.y = y
 
@@ -21,14 +22,31 @@ class Car:
         self.vel = 0
         self.velX = 0
         self.velY = 0
-        self.maxVel = 15
+        self.maxvel = 15
         self.angle = math.radians(180)
         self.soll_angle = self.angle
 
-        # self.original_image = pygame.image.load("car.png").convert()
-        # self.image = self.original_image  # This will reference the rotated image.
-        # self.image.set_colorkey((0,0,0))
-        # self.rect = self.image.get_rect().move(self.x, self.y)
+        self.original_image = pygame.image.load('assets/img/car.png').convert()
+        # This will reference the rotated image.
+        self.image = self.original_image
+        self.image.set_colorkey((0, 0, 0))
+        self.rect = self.image.get_rect().move(self.x, self.y)
+
+        self.pt1 = Point(self.pt.x - self.width / 2,
+                         self.pt.y - self.height / 2)
+        self.pt2 = Point(self.pt.x + self.width / 2,
+                         self.pt.y - self.height / 2)
+        self.pt3 = Point(self.pt.x + self.width / 2,
+                         self.pt.y + self.height / 2)
+        self.pt4 = Point(self.pt.x - self.width / 2,
+                         self.pt.y + self.height / 2)
+
+        self.p1 = self.pt1
+        self.p2 = self.pt2
+        self.p3 = self.pt3
+        self.p4 = self.pt4
+
+        self.distances = []
 
     def action(self, choice: int):
         match choice:
@@ -203,7 +221,7 @@ class Car:
             x4 = li.pt2.x
             y4 = li.pt2.y
 
-            den = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4)
+            denom = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4)
 
             if (denom == 0):
                 denom = 0

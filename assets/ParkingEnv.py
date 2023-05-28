@@ -7,7 +7,7 @@ from assets.models.Walls import Wall, getWalls
 # CONSTANTS
 DRAW_WALLS = True
 DRAW_GOALS = False
-DRAW_RAYS = False
+DRAW_RAYS = True
 
 
 class ParkingEnv:
@@ -37,7 +37,41 @@ class ParkingEnv:
         self.game_reward = 0
 
     def step(self, action):
-        pass
+        done = False
+        self.car.action(action)
+        self.car.update()
+        reward = 0
+        # reward = LIFE_REWARD
+
+        # Check if car passes Goal and scores
+        index = 1
+        '''
+        for goal in self.goals:
+
+            if index > len(self.goals):
+                index = 1
+            if goal.isactiv:
+                if self.car.score(goal):
+                    goal.isactiv = False
+                    self.goals[index-2].isactiv = True
+                    # reward += GOALREWARD
+
+            index = index + 1
+
+        '''
+
+        # check if car crashed in the wall
+        for wall in self.walls:
+            if self.car.collision(wall):
+                # reward += PENALTY
+                done = True
+
+        new_state = self.car.cast(self.walls)
+        # normalize states
+        if done:
+            new_state = None
+
+        return new_state, reward, done
 
     def render(self, action):
         pygame.time.delay(10)
@@ -50,6 +84,26 @@ class ParkingEnv:
         if DRAW_WALLS:
             for wall in self.walls:
                 wall.draw(self.screen)
+
+        self.car.draw(self.screen)
+
+        if DRAW_RAYS:
+            i = 0
+            for pt in self.car.closestRays:
+                pygame.draw.circle(self.screen, (0, 0, 255), (pt.x, pt.y), 5)
+                i += 1
+                if i < 15:
+                    pygame.draw.line(self.screen, (255, 255, 255),
+                                     (self.car.x, self.car.y), (pt.x, pt.y), 1)
+                elif i >= 15 and i < 17:
+                    pygame.draw.line(self.screen, (255, 255, 255), ((
+                        self.car.p1.x + self.car.p2.x)/2, (self.car.p1.y + self.car.p2.y)/2), (pt.x, pt.y), 1)
+                elif i == 17:
+                    pygame.draw.line(self.screen, (255, 255, 255),
+                                     (self.car.p1.x, self.car.p1.y), (pt.x, pt.y), 1)
+                else:
+                    pygame.draw.line(self.screen, (255, 255, 255),
+                                     (self.car.p2.x, self.car.p2.y), (pt.x, pt.y), 1)
 
         self.clock.tick(self.fps)
         pygame.display.update()
