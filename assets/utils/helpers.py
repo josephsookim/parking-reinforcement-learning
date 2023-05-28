@@ -22,3 +22,7 @@ def rotateRect(pt1, pt2, pt3, pt4, angle):
     pt4 = rotate(pt_center, pt4, angle)
 
     return pt1, pt2, pt3, pt4
+
+
+def distance(pt1, pt2):
+    return (((pt1.x - pt2.x)**2 + (pt1.y - pt2.y)**2)**0.5)
