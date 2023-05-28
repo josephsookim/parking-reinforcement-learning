@@ -76,20 +76,6 @@ class Car:
         self.soll_angle = self.soll_angle + dir * math.radians(15)
 
     def update(self):
-        # drifting code
-
-        # if(self.soll_angle > self.angle):
-        #     if(self.soll_angle > self.angle + math.radians(10) * self.maxvel / ((self.velX**2 + self.velY**2)**0.5 + 1)):
-        #         self.angle = self.angle + math.radians(10) * self.maxvel / ((self.velX**2 + self.velY**2)**0.5 + 1)
-        #     else:
-        #         self.angle = self.soll_angle
-
-        # if(self.soll_angle < self.angle):
-        #     if(self.soll_angle < self.angle - math.radians(10) * self.maxvel / ((self.velX**2 + self.velY**2)**0.5 + 1)):
-        #         self.angle = self.angle - math.radians(10) * self.maxvel / ((self.velX**2 + self.velY**2)**0.5 + 1)
-        #     else:
-        #         self.angle = self.soll_angle
-
         self.angle = self.soll_angle
 
         vec_temp = rotate(Point(0, 0), Point(0, self.vel), self.angle)
