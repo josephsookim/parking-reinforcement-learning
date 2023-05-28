@@ -2,7 +2,9 @@ import math
 import pygame
 
 from assets.models.Point import Point
-from assets.utils.helpers import rotate, rotateRect
+from assets.models.Line import Line
+from assets.models.Ray import Ray
+from assets.utils.helpers import rotate, rotateRect, distance
 
 
 class Car:
@@ -99,3 +101,147 @@ class Car:
         x, y = self.rect.center  # Save its current center.
         self.rect = self.image.get_rect()  # Replace old rect with new rect.
         self.rect.center = (x, y)
+
+    def cast(self, walls):
+
+        ray1 = Ray(self.x, self.y, self.soll_angle)
+        ray2 = Ray(self.x, self.y, self.soll_angle - math.radians(30))
+        ray3 = Ray(self.x, self.y, self.soll_angle + math.radians(30))
+        ray4 = Ray(self.x, self.y, self.soll_angle + math.radians(45))
+        ray5 = Ray(self.x, self.y, self.soll_angle - math.radians(45))
+        ray6 = Ray(self.x, self.y, self.soll_angle + math.radians(90))
+        ray7 = Ray(self.x, self.y, self.soll_angle - math.radians(90))
+        ray8 = Ray(self.x, self.y, self.soll_angle + math.radians(180))
+
+        ray9 = Ray(self.x, self.y, self.soll_angle + math.radians(10))
+        ray10 = Ray(self.x, self.y, self.soll_angle - math.radians(10))
+        ray11 = Ray(self.x, self.y, self.soll_angle + math.radians(135))
+        ray12 = Ray(self.x, self.y, self.soll_angle - math.radians(135))
+        ray13 = Ray(self.x, self.y, self.soll_angle + math.radians(20))
+        ray14 = Ray(self.x, self.y, self.soll_angle - math.radians(20))
+
+        ray15 = Ray(self.p1.x, self.p1.y, self.soll_angle + math.radians(90))
+        ray16 = Ray(self.p2.x, self.p2.y, self.soll_angle - math.radians(90))
+
+        ray17 = Ray(self.p1.x, self.p1.y, self.soll_angle + math.radians(0))
+        ray18 = Ray(self.p2.x, self.p2.y, self.soll_angle - math.radians(0))
+
+        self.rays = []
+        self.rays.append(ray1)
+        self.rays.append(ray2)
+        self.rays.append(ray3)
+        self.rays.append(ray4)
+        self.rays.append(ray5)
+        self.rays.append(ray6)
+        self.rays.append(ray7)
+        self.rays.append(ray8)
+
+        self.rays.append(ray9)
+        self.rays.append(ray10)
+        self.rays.append(ray11)
+        self.rays.append(ray12)
+        self.rays.append(ray13)
+        self.rays.append(ray14)
+
+        self.rays.append(ray15)
+        self.rays.append(ray16)
+
+        self.rays.append(ray17)
+        self.rays.append(ray18)
+
+        observations = []
+        self.closestRays = []
+
+        for ray in self.rays:
+            closest = None  # myPoint(0,0)
+            record = math.inf
+            for wall in walls:
+                pt = ray.cast(wall)
+                if pt:
+                    dist = distance(Point(self.x, self.y), pt)
+                    if dist < record:
+                        record = dist
+                        closest = pt
+
+            if closest:
+                # append distance for current ray
+                self.closestRays.append(closest)
+                observations.append(record)
+
+            else:
+                observations.append(1000)
+
+        for i in range(len(observations)):
+            # invert observation values 0 is far away 1 is close
+            observations[i] = ((1000 - observations[i]) / 1000)
+
+        observations.append(self.vel / self.maxvel)
+        return observations
+
+    def collision(self, wall):
+
+        line1 = Line(self.p1, self.p2)
+        line2 = Line(self.p2, self.p3)
+        line3 = Line(self.p3, self.p4)
+        line4 = Line(self.p4, self.p1)
+
+        x1 = wall.x1
+        y1 = wall.y1
+        x2 = wall.x2
+        y2 = wall.y2
+
+        lines = []
+        lines.append(line1)
+        lines.append(line2)
+        lines.append(line3)
+        lines.append(line4)
+
+        for li in lines:
+
+            x3 = li.pt1.x
+            y3 = li.pt1.y
+            x4 = li.pt2.x
+            y4 = li.pt2.y
+
+            den = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4)
+
+            if (denom == 0):
+                denom = 0
+            else:
+                t = ((x1 - x3) * (y3 - y4) - (y1 - y3) * (x3 - x4)) / denom
+                u = -((x1 - x2) * (y1 - y3) - (y1 - y2) * (x1 - x3)) / denom
+
+                if t > 0 and t < 1 and u < 1 and u > 0:
+                    return (True)
+
+        return (False)
+
+    def score(self, goal):
+        pass
+
+    def reset(self):
+        self.x = 50
+        self.y = 300
+        self.velX = 0
+        self.velY = 0
+        self.vel = 0
+        self.angle = math.radians(180)
+        self.soll_angle = self.angle
+        self.points = 0
+
+        self.pt1 = Point(self.pt.x - self.width / 2,
+                         self.pt.y - self.height / 2)
+        self.pt2 = Point(self.pt.x + self.width / 2,
+                         self.pt.y - self.height / 2)
+        self.pt3 = Point(self.pt.x + self.width / 2,
+                         self.pt.y + self.height / 2)
+        self.pt4 = Point(self.pt.x - self.width / 2,
+                         self.pt.y + self.height / 2)
+
+        self.p1 = self.pt1
+        self.p2 = self.pt2
+        self.p3 = self.pt3
+        self.p4 = self.pt4
+
+    def draw(self, win):
+        win.blit(self.image, self.rect)
