@@ -1,8 +1,8 @@
 import math
 import pygame
 
-from models.Point import Point
-from utils.helpers import rotate, rotateRect
+from assets.models.Point import Point
+from assets.utils.helpers import rotate, rotateRect
 
 
 class Car:

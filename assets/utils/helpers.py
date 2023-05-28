@@ -1,5 +1,6 @@
 import math
-from models.Point import Point
+
+from assets.models.Point import Point
 
 
 def rotate(origin, point, angle):

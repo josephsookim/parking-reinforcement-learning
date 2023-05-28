@@ -16,7 +16,7 @@ def run():
             if event.type == pygame.QUIT:
                 return
 
-        game.render('bruh')
+        game.render()
 
 
 run()

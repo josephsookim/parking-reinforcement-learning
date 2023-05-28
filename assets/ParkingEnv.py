@@ -49,7 +49,6 @@ class ParkingEnv:
 
         if DRAW_WALLS:
             for wall in self.walls:
-                print('done')
                 wall.draw(self.screen)
 
         self.clock.tick(self.fps)

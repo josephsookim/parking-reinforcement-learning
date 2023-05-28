@@ -1,6 +1,7 @@
 import math
-from models.Point import Point
-from utils.helpers import rotate
+
+from assets.models.Point import Point
+from assets.utils.helpers import rotate
 
 
 class Ray:
