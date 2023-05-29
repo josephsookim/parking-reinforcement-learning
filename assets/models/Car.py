@@ -197,42 +197,30 @@ class Car:
         return observations
 
     def collision(self, wall):
-
-        line1 = Line(self.p1, self.p2)
-        line2 = Line(self.p2, self.p3)
-        line3 = Line(self.p3, self.p4)
-        line4 = Line(self.p4, self.p1)
+        lines = [Line(self.p1, self.p2), Line(self.p2, self.p3),
+                 Line(self.p3, self.p4), Line(self.p4, self.p1)]
 
         x1 = wall.x1
         y1 = wall.y1
         x2 = wall.x2
         y2 = wall.y2
 
-        lines = []
-        lines.append(line1)
-        lines.append(line2)
-        lines.append(line3)
-        lines.append(line4)
-
-        for li in lines:
-
-            x3 = li.pt1.x
-            y3 = li.pt1.y
-            x4 = li.pt2.x
-            y4 = li.pt2.y
+        for line in lines:
+            x3 = line.pt1.x
+            y3 = line.pt1.y
+            x4 = line.pt2.x
+            y4 = line.pt2.y
 
             denom = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4)
 
-            if (denom == 0):
-                denom = 0
-            else:
+            if denom != 0:
                 t = ((x1 - x3) * (y3 - y4) - (y1 - y3) * (x3 - x4)) / denom
                 u = -((x1 - x2) * (y1 - y3) - (y1 - y2) * (x1 - x3)) / denom
 
-                if t > 0 and t < 1 and u < 1 and u > 0:
-                    return (True)
+                if 0 < t < 1 and 0 < u < 1:
+                    return True
 
-        return (False)
+        return False
 
     def score(self, goal):
         pass
