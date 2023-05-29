@@ -19,9 +19,7 @@ class ParkingEnv:
         self.height = 1000
 
         self.screen = pygame.display.set_mode((self.width, self.height))
-        pygame.display.set_caption("Parking PPO")
-        # self.back_image = pygame.image.load("track.png").convert()
-        # self.back_rect = self.back_image.get_rect().move(0, 0)
+        pygame.display.set_caption('Parking PPO')
         self.action_space = None
         self.observation_space = None
         self.score = 0
@@ -90,7 +88,7 @@ class ParkingEnv:
         if DRAW_RAYS:
             i = 0
             for pt in self.car.closestRays:
-                pygame.draw.circle(self.screen, (0, 0, 255), (pt.x, pt.y), 5)
+                pygame.draw.circle(self.screen, (0, 255, 0), (pt.x, pt.y), 5)
                 i += 1
                 if i < 15:
                     pygame.draw.line(self.screen, (255, 255, 255),
