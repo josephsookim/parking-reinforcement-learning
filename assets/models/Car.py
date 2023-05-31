@@ -104,6 +104,7 @@ class Car:
 
         self.x = self.x + self.velX
         self.y = self.y + self.velY
+        self.pt = Point(self.x, self.y)
 
         self.rect.center = self.x, self.y
 
