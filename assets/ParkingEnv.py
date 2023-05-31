@@ -3,11 +3,14 @@ import pygame
 from assets.models.Car import Car
 from assets.models.Ray import Ray
 from assets.models.Walls import Wall, getWalls
+from assets.models.Goals import Goal, getGoals
 
 # CONSTANTS
 DRAW_WALLS = True
-DRAW_GOALS = False
+DRAW_GOALS = True
 DRAW_RAYS = True
+
+GOALREWARD = 10
 
 
 class ParkingEnv:
@@ -25,13 +28,12 @@ class ParkingEnv:
         self.score = 0
 
         self.walls = getWalls()
-        print(self.walls)
         self.reset()
 
     def reset(self):
         self.screen.fill((0, 0, 0))
         self.car = Car(50, 300)
-        # self.goals = getGoals()
+        self.goals = getGoals()
         self.game_reward = 0
 
     def step(self, action):
@@ -41,22 +43,11 @@ class ParkingEnv:
         reward = 0
         # reward = LIFE_REWARD
 
-        # Check if car passes Goal and scores
-        index = 1
-        '''
         for goal in self.goals:
-
-            if index > len(self.goals):
-                index = 1
-            if goal.isactiv:
+            if goal.active:
                 if self.car.score(goal):
-                    goal.isactiv = False
-                    self.goals[index-2].isactiv = True
-                    # reward += GOALREWARD
-
-            index = index + 1
-
-        '''
+                    reward += GOALREWARD
+                    done = True
 
         # check if car crashed in the wall
         for wall in self.walls:
@@ -82,6 +73,12 @@ class ParkingEnv:
         if DRAW_WALLS:
             for wall in self.walls:
                 wall.draw(self.screen)
+
+        if DRAW_GOALS:
+            for goal in self.goals:
+                goal.draw(self.screen)
+                if goal.active:
+                    goal.draw(self.screen)
 
         self.car.draw(self.screen)
 
