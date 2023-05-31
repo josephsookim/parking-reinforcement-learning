@@ -25,7 +25,7 @@ class Car:
         self.vel = 0
         self.velX = 0
         self.velY = 0
-        self.maxvel = 2
+        self.maxvel = 10
         self.angle = math.radians(180)
         self.soll_angle = self.angle
 
@@ -207,10 +207,10 @@ class Car:
         y2 = wall.y2 + 10
 
         for line in lines:
-            x3 = line.pt1.x
-            y3 = line.pt1.y
-            x4 = line.pt2.x
-            y4 = line.pt2.y
+            x3 = line.pt1.x - 10
+            y3 = line.pt1.y - 10
+            x4 = line.pt2.x + 10
+            y4 = line.pt2.y + 10
 
             denom = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4)
 
