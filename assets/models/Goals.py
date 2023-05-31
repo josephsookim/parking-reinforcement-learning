@@ -25,15 +25,15 @@ def getGoals():
     goals = []
 
     for i in range(200, 650, 50):
-        goals.append(Goal(i + 20, 240, i + 30, 260))
-        goals.append(Goal(i + 20, 340, i + 30, 360))
-        goals.append(Goal(i + 20, 640, i + 30, 660))
-        goals.append(Goal(i + 20, 740, i + 30, 760))
+        goals.append(Goal(i + 15, 230, i + 35, 270))
+        goals.append(Goal(i + 15, 330, i + 35, 370))
+        goals.append(Goal(i + 15, 630, i + 35, 670))
+        goals.append(Goal(i + 15, 730, i + 35, 770))
 
     for i in range(850, 1300, 50):
-        goals.append(Goal(i + 20, 240, i + 30, 260))
-        goals.append(Goal(i + 20, 340, i + 30, 360))
-        goals.append(Goal(i + 20, 640, i + 30, 660))
-        goals.append(Goal(i + 20, 740, i + 30, 760))
+        goals.append(Goal(i + 15, 230, i + 35, 270))
+        goals.append(Goal(i + 15, 330, i + 35, 370))
+        goals.append(Goal(i + 15, 630, i + 35, 670))
+        goals.append(Goal(i + 15, 730, i + 35, 770))
 
     return goals
