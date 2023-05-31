@@ -13,12 +13,11 @@ DRAW_WALLS = True
 DRAW_GOALS = True
 DRAW_RAYS = True
 
-GOAL_REWARD = 3
-TIME_REWARD = -1
-CRASH_REWARD = -1
-SPIN_PENALTY = -2
+GOAL_REWARD = 1000
+TIME_REWARD = -50
+CRASH_REWARD = -100
+SPIN_PENALTY = -100
 MAX_STEPS = 256
-MAX_GAMETIME = 1000
 
 
 class ParkingEnv:
@@ -49,6 +48,7 @@ class ParkingEnv:
         self.game_reward = 0
         self.max_distance = distance(self.car.pt, self.goal.pt)
         self.madeGoal = False
+        self.counter = 0
 
     def step(self, action):
         done = False
@@ -80,15 +80,20 @@ class ParkingEnv:
         if self.steps == MAX_STEPS:
             reward += TIME_REWARD
 
-        if self.steps > MAX_GAMETIME:
-            done = True
-
         self.steps += 1
 
         # spin penalty
-        if abs(self.car.angle_change) >= 135 and self.car.angle_change != 0:
+        if abs(self.car.angle_change) >= 180 and self.car.angle_change != 0:
             reward += SPIN_PENALTY
             done = True
+
+        # This is a countdown if no reward is collected the car will be done within 100 ticks
+        if reward <= 0:
+            self.counter += 1
+            if self.counter > 300:
+                done = True
+        else:
+            self.counter = 0
 
         new_state = self.car.cast(self.walls)
 
