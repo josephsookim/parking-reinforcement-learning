@@ -20,14 +20,13 @@ GameTime = 0
 GameHistory = []
 renderFlag = True
 
-ppo_agent = PPO(state_dim=19, action_dim=game.action_space.n, lr_actor=0.01, lr_critic=0.01, gamma=0.99, K_epochs=10, eps_clip=0.2, has_continuous_action_space=False, action_std_init=0.6)
+ppo_agent = PPO(state_dim=22, action_dim=game.action_space.n, lr_actor=0.001, lr_critic=0.001, gamma=0.99, K_epochs=10, eps_clip=0.2, has_continuous_action_space=False, action_std_init=0.6)
 
 # if you want to load the existing model uncomment this line.
 # careful an existing model might be overwritten
-# ppo_agent.load(checkpoint_path)
+#ppo_agent.load('model.h5')
 
 ppo_scores = []
-eps_history = []
 
 
 def run():
@@ -53,14 +52,12 @@ def run():
             observation_ = np.array(observation_)
 
             # This is a countdown if no reward is collected the car will be done within 100 ticks
-            '''
             if reward <= 0:
                 counter += 1
-                if counter > 100:
+                if counter > 600:
                     done = True
             else:
                 counter = 0
-            '''
 
             score += reward
 
@@ -79,14 +76,13 @@ def run():
 
         ppo_agent.update()
 
-        eps_history.append(0.0)
         ppo_scores.append(score)
         avg_score = np.mean(ppo_scores[max(0, e-100):(e+1)])
 
         if e % REPLACE_TARGET == 0 and e > REPLACE_TARGET:
             ppo_agent.policy_old.load_state_dict(ppo_agent.policy.state_dict())
 
-        if e % 10 == 0 and e > 10:
+        if e % 100 == 0 and e > 10:
             ppo_agent.save('model.h5')
             print("Saved model")
 
