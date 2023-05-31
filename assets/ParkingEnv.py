@@ -14,10 +14,9 @@ DRAW_GOALS = True
 DRAW_RAYS = True
 
 GOAL_REWARD = 1000
-TIME_REWARD = -25
-DIST_REWARD = 10
-CRASH_REWARD = -25
-SPIN_PENALTY = -5
+TIME_REWARD = -50
+CRASH_REWARD = -50
+SPIN_PENALTY = -100
 MAX_STEPS = 256
 
 
@@ -82,14 +81,10 @@ class ParkingEnv:
 
         self.steps += 1
 
-        # distance reward
-        current_distance = distance(self.car.pt, self.goal.pt)
-        normalized_distance = current_distance / self.max_distance
-        reward += (1 - normalized_distance) * DIST_REWARD
-
         # spin penalty
-        if abs(self.car.angle_change) > 360 and self.car.angle_change != 0:
+        if abs(self.car.angle_change) > 270 and self.car.angle_change != 0:
             reward += SPIN_PENALTY
+            done = True
 
         new_state = self.car.cast(self.walls)
         # normalize states

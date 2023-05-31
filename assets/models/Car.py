@@ -22,12 +22,12 @@ class Car:
         self.width = 1
         self.height = 1
         self.points = 0
-        self.dvel = 1
-        self.vel = 0
+        self.dvel = 2
+        self.vel = 2
         self.velX = 0
         self.velY = 0
         self.maxvel = 4
-        self.angle = math.radians(180)
+        self.angle = math.radians(0)
         self.soll_angle = self.angle
 
         self.angle_change = 0
@@ -79,8 +79,8 @@ class Car:
         if self.vel > self.maxvel:
             self.vel = self.maxvel
 
-        if self.vel < -self.maxvel:
-            self.vel = -self.maxvel
+        if self.vel < 2:
+            self.vel = 2
 
     def turn(self, dir):
         self.soll_angle = self.soll_angle + dir * math.radians(15)

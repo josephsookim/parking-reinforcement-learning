@@ -1,4 +1,5 @@
 from assets import ParkingEnv
+from assets.utils.helpers import distance
 
 import pygame
 import numpy as np
@@ -12,6 +13,7 @@ from ppo_pytorch import PPO
 TOTAL_GAMETIME = 1000  # Max game time for one episode
 N_EPISODES = 10000
 REPLACE_TARGET = 50
+DIST_REWARD = 50
 
 game = ParkingEnv.ParkingEnv()
 game.fps = 60
@@ -24,7 +26,7 @@ ppo_agent = PPO(state_dim=22, action_dim=game.action_space.n, lr_actor=0.001, lr
 
 # if you want to load the existing model uncomment this line.
 # careful an existing model might be overwritten
-#ppo_agent.load('model.h5')
+ppo_agent.load('model.h5')
 
 ppo_scores = []
 
@@ -54,10 +56,16 @@ def run():
             # This is a countdown if no reward is collected the car will be done within 100 ticks
             if reward <= 0:
                 counter += 1
-                if counter > 600:
+                if counter > 100:
                     done = True
             else:
                 counter = 0
+
+            if done:
+                # distance reward
+                current_distance = distance(game.car.pt, game.goal.pt)
+                normalized_distance = current_distance / game.max_distance
+                reward += (1 - normalized_distance) * DIST_REWARD
 
             score += reward
 
