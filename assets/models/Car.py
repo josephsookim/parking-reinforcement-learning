@@ -11,23 +11,26 @@ GOALREWARD = 10
 
 
 class Car:
-    def __init__(self, x: int, y: int):
+    def __init__(self, x: int, y: int, goal_pt: Point):
         # Passed parameters
         self.pt = Point(x, y)
         self.x = x
         self.y = y
+        self.goal_pt = goal_pt
 
         # Hard coded variables
         self.width = 1
         self.height = 1
         self.points = 0
-        self.dvel = 2
+        self.dvel = 1
         self.vel = 0
         self.velX = 0
         self.velY = 0
-        self.maxvel = 10
+        self.maxvel = 4
         self.angle = math.radians(180)
         self.soll_angle = self.angle
+
+        self.angle_change = 0
 
         self.original_image = pygame.image.load('assets/img/car.png').convert()
         # This will reference the rotated image.
@@ -53,33 +56,19 @@ class Car:
 
     def action(self, choice: int):
         match choice:
-            case 7:
-                self.accelerate(self.dvel)
-                self.turn(-1)
-
             case 8:
                 self.accelerate(self.dvel)
 
-            case 9:
-                self.accelerate(self.dvel)
-                self.turn(1)
-
             case 4:
                 self.turn(-1)
+                self.angle_change -= 15
 
             case 6:
                 self.turn(1)
-
-            case 1:
-                self.accelerate(-self.dvel)
-                self.turn(-1)
+                self.angle_change += 15
 
             case 2:
                 self.accelerate(-self.dvel)
-
-            case 3:
-                self.accelerate(-self.dvel)
-                self.turn(1)
 
             case _:
                 pass
@@ -196,6 +185,10 @@ class Car:
             observations[i] = ((1000 - observations[i]) / 1000)
 
         observations.append(self.vel / self.maxvel)
+        observations.append(self.x)
+        observations.append(self.y)
+        observations.append(distance(self.pt, self.goal_pt))
+
         return observations
 
     def collision(self, wall):
