@@ -13,23 +13,27 @@ DRAW_WALLS = True
 DRAW_GOALS = True
 DRAW_RAYS = True
 
-GOAL_REWARD = 50
-TIME_REWARD = -5
-DISTANCE_REWARD = 5
-CRASH_REWARD = -10
+GOAL_REWARD = 1000
+TIME_REWARD = -25
+DIST_REWARD = 10
+CRASH_REWARD = -25
+SPIN_PENALTY = -5
+MAX_STEPS = 256
 
 
 class ParkingEnv:
     def __init__(self):
         pygame.init()
 
-        self.fps = 10
+        self.fps = 60
         self.width = 850
         self.height = 600
 
+        self.steps = 0
+
         self.screen = pygame.display.set_mode((self.width, self.height))
         pygame.display.set_caption('Parking PPO')
-        self.action_space = gym.spaces.Discrete(8)
+        self.action_space = gym.spaces.Discrete(4)
         self.observation_space = None
         self.score = 0
 
@@ -38,10 +42,10 @@ class ParkingEnv:
 
     def reset(self):
         self.screen.fill((0, 0, 0))
-        self.car = Car(50, 300)
         #self.goal = self.goals[random.randint(0, 71)]
         self.goal = self.goals[0]
         self.goal.active = True
+        self.car = Car(100, 100, self.goal.pt)
         self.game_reward = 0
         self.max_distance = distance(self.car.pt, self.goal.pt)
 
@@ -49,24 +53,21 @@ class ParkingEnv:
         done = False
 
         action_mapping = {
-            0: 1,
-            1: 2,
-            2: 3,
-            3: 4,
-            4: 6,
-            5: 7,
-            6: 8,
-            7: 9
+            0: 8,
+            1: 4,
+            2: 6,
+            3: 2,
         }
 
         key = action_mapping[action]
 
         self.car.action(key)
         self.car.update()
-        reward = TIME_REWARD
+        reward = 0
 
         if self.car.score(self.goal):
             reward += GOAL_REWARD
+            print('GOAL')
             done = True
 
         # check if car crashed in the wall
@@ -75,11 +76,20 @@ class ParkingEnv:
                 reward += CRASH_REWARD
                 done = True
 
+        # time limit penalty
+        if self.steps == MAX_STEPS:
+            reward += TIME_REWARD
+
+        self.steps += 1
+
         # distance reward
         current_distance = distance(self.car.pt, self.goal.pt)
         normalized_distance = current_distance / self.max_distance
-        distance_reward = (1 - normalized_distance) * DISTANCE_REWARD
-        reward += distance_reward
+        reward += (1 - normalized_distance) * DIST_REWARD
+
+        # spin penalty
+        if abs(self.car.angle_change) > 360 and self.car.angle_change != 0:
+            reward += SPIN_PENALTY
 
         new_state = self.car.cast(self.walls)
         # normalize states
