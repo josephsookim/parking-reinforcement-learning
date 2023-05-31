@@ -13,7 +13,6 @@ from ppo_pytorch import PPO
 TOTAL_GAMETIME = 1000  # Max game time for one episode
 N_EPISODES = 10000
 REPLACE_TARGET = 50
-DIST_REWARD = 50
 
 game = ParkingEnv.ParkingEnv()
 game.fps = 30
@@ -22,7 +21,7 @@ GameTime = 0
 GameHistory = []
 renderFlag = True
 
-ppo_agent = PPO(state_dim=13, action_dim=game.action_space.n, lr_actor=0.005, lr_critic=0.005, gamma=0.99, K_epochs=10, eps_clip=0.2, has_continuous_action_space=False, action_std_init=0.6)
+ppo_agent = PPO(state_dim=13, action_dim=game.action_space.n, lr_actor=0.0001, lr_critic=0.0001, gamma=0.99, K_epochs=20, eps_clip=0.2, has_continuous_action_space=False, action_std_init=0.6)
 
 # if you want to load the existing model uncomment this line.
 # careful an existing model might be overwritten
@@ -56,7 +55,7 @@ def run():
                 current_distance = distance(game.car.pt, game.goal.pt)
                 normalized_distance = current_distance / game.max_distance
 
-                reward += (1 - normalized_distance) * DIST_REWARD
+                reward += (1 - normalized_distance)
 
             if game.madeGoal:
                 hit_count += 1
@@ -74,7 +73,6 @@ def run():
         ppo_agent.update()
 
         ppo_scores.append(score)
-        avg_score = np.mean(ppo_scores[max(0, e-100):(e+1)])
 
         if e % REPLACE_TARGET == 0 and e > REPLACE_TARGET:
             ppo_agent.policy_old.load_state_dict(ppo_agent.policy.state_dict())
