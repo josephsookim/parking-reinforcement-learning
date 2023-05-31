@@ -10,7 +10,9 @@ DRAW_WALLS = True
 DRAW_GOALS = True
 DRAW_RAYS = True
 
-GOALREWARD = 10
+GOAL_REWARD = 1000
+TIME_REWARD = -1
+CRASH_REWARD = -1000
 
 
 class ParkingEnv:
@@ -40,19 +42,18 @@ class ParkingEnv:
         done = False
         self.car.action(action)
         self.car.update()
-        reward = 0
-        # reward = LIFE_REWARD
+        reward = TIME_REWARD
 
         for goal in self.goals:
             if goal.active:
                 if self.car.score(goal):
-                    reward += GOALREWARD
+                    reward += GOAL_REWARD
                     done = True
 
         # check if car crashed in the wall
         for wall in self.walls:
             if self.car.collision(wall):
-                # reward += PENALTY
+                reward += CRASH_REWARD
                 done = True
 
         new_state = self.car.cast(self.walls)
