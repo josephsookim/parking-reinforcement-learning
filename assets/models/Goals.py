@@ -9,7 +9,7 @@ class Goal:
         self.x2 = x2
         self.y2 = y2
 
-        self.active = True
+        self.active = False
 
     def draw(self, win):
         pygame.draw.rect(win, (0, 255, 0), (self.x1, self.y1,
@@ -24,8 +24,14 @@ def getGoals():
 
     for i in range(200, 650, 50):
         goals.append(Goal(i + 20, 240, i + 30, 260))
+        goals.append(Goal(i + 20, 340, i + 30, 360))
+        goals.append(Goal(i + 20, 640, i + 30, 660))
+        goals.append(Goal(i + 20, 740, i + 30, 760))
 
-        # Bottom Side
-        # goals.append(Wall(i, 350, i, 400))
+    for i in range(850, 1300, 50):
+        goals.append(Goal(i + 20, 240, i + 30, 260))
+        goals.append(Goal(i + 20, 340, i + 30, 360))
+        goals.append(Goal(i + 20, 640, i + 30, 660))
+        goals.append(Goal(i + 20, 740, i + 30, 760))
 
     return goals
