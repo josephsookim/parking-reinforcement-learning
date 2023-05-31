@@ -64,10 +64,12 @@ def getWalls():
     walls.append(Wall(0, 0, 1500, 0))
 
     # Right Border
+    walls.append(Wall(1500, 0, 1500, 1000))
 
     # Bottom Border
     walls.append(Wall(0, 1000, 1500, 1000))
 
     # Left Border
+    walls.append(Wall(0, 0, 0, 1000))
 
     return walls
