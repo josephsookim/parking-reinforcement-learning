@@ -18,11 +18,11 @@ class Car:
         self.width = 1
         self.height = 1
         self.points = 0
-        self.dvel = 1
+        self.dvel = 2
         self.vel = 0
         self.velX = 0
         self.velY = 0
-        self.maxvel = 15
+        self.maxvel = 2
         self.angle = math.radians(180)
         self.soll_angle = self.angle
 
@@ -82,9 +82,7 @@ class Car:
                 pass
 
     def accelerate(self, dvel):
-        dvel = dvel * 2
-
-        self.vel = self.vel + dvel
+        self.vel += dvel
 
         if self.vel > self.maxvel:
             self.vel = self.maxvel
@@ -200,10 +198,10 @@ class Car:
         lines = [Line(self.p1, self.p2), Line(self.p2, self.p3),
                  Line(self.p3, self.p4), Line(self.p4, self.p1)]
 
-        x1 = wall.x1
-        y1 = wall.y1
-        x2 = wall.x2
-        y2 = wall.y2
+        x1 = wall.x1 - 10
+        y1 = wall.y1 - 10
+        x2 = wall.x2 + 10
+        y2 = wall.y2 + 10
 
         for line in lines:
             x3 = line.pt1.x
