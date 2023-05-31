@@ -230,15 +230,15 @@ class Car:
         line1 = Line(Point(self.x, self.y), Point(
             self.x + vec.x, self.y + vec.y))
 
-        x1 = goal.x1
-        y1 = goal.y1
-        x2 = goal.x2
-        y2 = goal.y2
+        x1 = goal.x1 - 5
+        y1 = goal.y1 - 5
+        x2 = goal.x2 + 5
+        y2 = goal.y2 + 5
 
-        x3 = line1.pt1.x
-        y3 = line1.pt1.y
-        x4 = line1.pt2.x
-        y4 = line1.pt2.y
+        x3 = line1.pt1.x - 5
+        y3 = line1.pt1.y - 5
+        x4 = line1.pt2.x + 5
+        y4 = line1.pt2.y + 5
 
         den = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4)
 
