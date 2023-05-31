@@ -64,10 +64,6 @@ def run():
 
             ppo_agent.buffer.rewards.append(reward)
             ppo_agent.buffer.is_terminals.append(done)
-            ppo_agent.buffer.states.append(observation)
-            ppo_agent.buffer.actions.append(action)
-            ppo_agent.buffer.logprobs.append(ppo_agent.policy_old.evaluate(observation, action).log_prob)
-            ppo_agent.buffer.state_values.append(ppo_agent.policy_old.get_state_value(observation))
 
             observation = observation_
 
@@ -75,6 +71,7 @@ def run():
                 game.render()
 
         ppo_agent.update()
+        ppo_agent.buffer.clear()
 
         ppo_scores.append(score)
 
