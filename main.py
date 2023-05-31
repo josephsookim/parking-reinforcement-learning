@@ -16,33 +16,31 @@ REPLACE_TARGET = 50
 DIST_REWARD = 50
 
 game = ParkingEnv.ParkingEnv()
-game.fps = 60
+game.fps = 30
 
 GameTime = 0
 GameHistory = []
 renderFlag = True
 
-ppo_agent = PPO(state_dim=22, action_dim=game.action_space.n, lr_actor=0.001, lr_critic=0.001, gamma=0.99, K_epochs=10, eps_clip=0.2, has_continuous_action_space=False, action_std_init=0.6)
+ppo_agent = PPO(state_dim=13, action_dim=game.action_space.n, lr_actor=0.005, lr_critic=0.005, gamma=0.99, K_epochs=10, eps_clip=0.2, has_continuous_action_space=False, action_std_init=0.6)
 
 # if you want to load the existing model uncomment this line.
 # careful an existing model might be overwritten
-ppo_agent.load('model.h5')
+#ppo_agent.load('model.h5')
 
 ppo_scores = []
 
 
 def run():
+    hit_count = 0
     for e in range(N_EPISODES):
         game.reset()  # reset env
 
         done = False
         score = 0
-        counter = 0
 
         observation_, reward, done = game.step(0)
         observation = np.array(observation_)
-
-        gtime = 0  # set game time back to 0
 
         while not done:
             for event in pygame.event.get():
@@ -53,19 +51,15 @@ def run():
             observation_, reward, done = game.step(action)
             observation_ = np.array(observation_)
 
-            # This is a countdown if no reward is collected the car will be done within 100 ticks
-            if reward <= 0:
-                counter += 1
-                if counter > 100:
-                    done = True
-            else:
-                counter = 0
-
             if done:
                 # distance reward
                 current_distance = distance(game.car.pt, game.goal.pt)
                 normalized_distance = current_distance / game.max_distance
+
                 reward += (1 - normalized_distance) * DIST_REWARD
+
+            if game.madeGoal:
+                hit_count += 1
 
             score += reward
 
@@ -73,11 +67,6 @@ def run():
             ppo_agent.buffer.is_terminals.append(done)
 
             observation = observation_
-
-            gtime += 1
-
-            if gtime >= TOTAL_GAMETIME:
-                done = True
 
             if renderFlag:
                 game.render()
@@ -94,9 +83,9 @@ def run():
             ppo_agent.save('model.h5')
             print("Saved model")
 
-        print('episode: ', e, 'score: %.2f' % score,
-              'average score %.2f' % avg_score,
-              'memory size', len(ppo_agent.buffer.rewards))
+        print(f'episode {e}: {score}')
+        print(f'hit rate: {hit_count / (e+1)}% | {hit_count} / {e+1}')
+        print('----')
 
 
 run()

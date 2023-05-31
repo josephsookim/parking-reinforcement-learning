@@ -24,16 +24,10 @@ class Goal:
 def getGoals():
     goals = []
 
-    for i in range(200, 650, 50):
-        goals.append(Goal(i + 15, 230, i + 35, 270))
-        goals.append(Goal(i + 15, 330, i + 35, 370))
-        goals.append(Goal(i + 15, 630, i + 35, 670))
-        goals.append(Goal(i + 15, 730, i + 35, 770))
+    for i in range(200, 600, 100):
+        goals.append(Goal(i + 30, 220, i + 70, 280))
+        goals.append(Goal(i + 30, 320, i + 70, 380))
 
-    for i in range(850, 1300, 50):
-        goals.append(Goal(i + 15, 230, i + 35, 270))
-        goals.append(Goal(i + 15, 330, i + 35, 370))
-        goals.append(Goal(i + 15, 630, i + 35, 670))
-        goals.append(Goal(i + 15, 730, i + 35, 770))
+    print(len(goals))
 
     return goals

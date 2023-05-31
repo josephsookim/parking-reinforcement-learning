@@ -15,7 +15,7 @@ DRAW_RAYS = True
 
 GOAL_REWARD = 1000
 TIME_REWARD = -50
-CRASH_REWARD = -50
+CRASH_REWARD = -100
 SPIN_PENALTY = -100
 MAX_STEPS = 256
 
@@ -24,15 +24,15 @@ class ParkingEnv:
     def __init__(self):
         pygame.init()
 
-        self.fps = 60
-        self.width = 850
+        self.fps = 30
+        self.width = 800
         self.height = 600
 
         self.steps = 0
 
         self.screen = pygame.display.set_mode((self.width, self.height))
         pygame.display.set_caption('Parking PPO')
-        self.action_space = gym.spaces.Discrete(4)
+        self.action_space = gym.spaces.Discrete(2)
         self.observation_space = None
         self.score = 0
 
@@ -41,21 +41,21 @@ class ParkingEnv:
 
     def reset(self):
         self.screen.fill((0, 0, 0))
-        #self.goal = self.goals[random.randint(0, 71)]
         self.goal = self.goals[0]
+        #self.goal = self.goals[random.randint(0, 7)]
+        self.car = Car(50, 300, self.goal.pt)
         self.goal.active = True
-        self.car = Car(100, 100, self.goal.pt)
         self.game_reward = 0
         self.max_distance = distance(self.car.pt, self.goal.pt)
+        self.madeGoal = False
+        self.counter = 0
 
     def step(self, action):
         done = False
 
         action_mapping = {
-            0: 8,
-            1: 4,
-            2: 6,
-            3: 2,
+            0: 4,
+            1: 6,
         }
 
         key = action_mapping[action]
@@ -66,6 +66,7 @@ class ParkingEnv:
 
         if self.car.score(self.goal):
             reward += GOAL_REWARD
+            self.madeGoal = True
             print('GOAL')
             done = True
 
@@ -82,12 +83,20 @@ class ParkingEnv:
         self.steps += 1
 
         # spin penalty
-        if abs(self.car.angle_change) > 270 and self.car.angle_change != 0:
+        if abs(self.car.angle_change) >= 180 and self.car.angle_change != 0:
             reward += SPIN_PENALTY
             done = True
 
+        # This is a countdown if no reward is collected the car will be done within 100 ticks
+        if reward <= 0:
+            self.counter += 1
+            if self.counter > 300:
+                done = True
+        else:
+            self.counter = 0
+
         new_state = self.car.cast(self.walls)
-        # normalize states
+
         if done:
             self.goal.active = False
             new_state = None

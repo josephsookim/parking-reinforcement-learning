@@ -23,11 +23,11 @@ class Car:
         self.height = 1
         self.points = 0
         self.dvel = 2
-        self.vel = 2
+        self.vel = 10
         self.velX = 0
         self.velY = 0
-        self.maxvel = 4
-        self.angle = math.radians(0)
+        self.maxvel = 10
+        self.angle = math.radians(-90)
         self.soll_angle = self.angle
 
         self.angle_change = 0
@@ -56,9 +56,6 @@ class Car:
 
     def action(self, choice: int):
         match choice:
-            case 8:
-                self.accelerate(self.dvel)
-
             case 4:
                 self.turn(-1)
                 self.angle_change -= 15
@@ -67,11 +64,16 @@ class Car:
                 self.turn(1)
                 self.angle_change += 15
 
-            case 2:
-                self.accelerate(-self.dvel)
-
             case _:
                 pass
+
+        '''
+        case 8:
+            self.accelerate(self.dvel)
+
+        case 2:
+            self.accelerate(-self.dvel)
+        '''
 
     def accelerate(self, dvel):
         self.vel += dvel
@@ -112,51 +114,10 @@ class Car:
         self.rect.center = (x, y)
 
     def cast(self, walls):
-
-        ray1 = Ray(self.x, self.y, self.soll_angle)
-        ray2 = Ray(self.x, self.y, self.soll_angle - math.radians(30))
-        ray3 = Ray(self.x, self.y, self.soll_angle + math.radians(30))
-        ray4 = Ray(self.x, self.y, self.soll_angle + math.radians(45))
-        ray5 = Ray(self.x, self.y, self.soll_angle - math.radians(45))
-        ray6 = Ray(self.x, self.y, self.soll_angle + math.radians(90))
-        ray7 = Ray(self.x, self.y, self.soll_angle - math.radians(90))
-        ray8 = Ray(self.x, self.y, self.soll_angle + math.radians(180))
-
-        ray9 = Ray(self.x, self.y, self.soll_angle + math.radians(10))
-        ray10 = Ray(self.x, self.y, self.soll_angle - math.radians(10))
-        ray11 = Ray(self.x, self.y, self.soll_angle + math.radians(135))
-        ray12 = Ray(self.x, self.y, self.soll_angle - math.radians(135))
-        ray13 = Ray(self.x, self.y, self.soll_angle + math.radians(20))
-        ray14 = Ray(self.x, self.y, self.soll_angle - math.radians(20))
-
-        ray15 = Ray(self.p1.x, self.p1.y, self.soll_angle + math.radians(90))
-        ray16 = Ray(self.p2.x, self.p2.y, self.soll_angle - math.radians(90))
-
-        ray17 = Ray(self.p1.x, self.p1.y, self.soll_angle + math.radians(0))
-        ray18 = Ray(self.p2.x, self.p2.y, self.soll_angle - math.radians(0))
-
         self.rays = []
-        self.rays.append(ray1)
-        self.rays.append(ray2)
-        self.rays.append(ray3)
-        self.rays.append(ray4)
-        self.rays.append(ray5)
-        self.rays.append(ray6)
-        self.rays.append(ray7)
-        self.rays.append(ray8)
 
-        self.rays.append(ray9)
-        self.rays.append(ray10)
-        self.rays.append(ray11)
-        self.rays.append(ray12)
-        self.rays.append(ray13)
-        self.rays.append(ray14)
-
-        self.rays.append(ray15)
-        self.rays.append(ray16)
-
-        self.rays.append(ray17)
-        self.rays.append(ray18)
+        for i in range(0, 8):
+            self.rays.append(Ray(self.x, self.y, self.soll_angle + math.radians(45) * i))
 
         observations = []
         self.closestRays = []
@@ -187,7 +148,8 @@ class Car:
         observations.append(self.vel / self.maxvel)
         observations.append(self.x)
         observations.append(self.y)
-        observations.append(distance(self.pt, self.goal_pt))
+        observations.append(self.goal_pt.x)
+        observations.append(self.goal_pt.y)
 
         return observations
 

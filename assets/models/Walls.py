@@ -21,9 +21,9 @@ def getWalls():
     walls = []
 
     # Upper Left Parking Lot
-    walls.append(Wall(200, 300, 650, 300))
+    walls.append(Wall(200, 300, 600, 300))
 
-    for i in range(200, 650 + 1, 50):
+    for i in range(200, 600 + 1, 100):
         # Top Side
         walls.append(Wall(i, 300, i, 200))
 
@@ -31,13 +31,13 @@ def getWalls():
         walls.append(Wall(i, 300, i, 400))
 
     # Top Border
-    walls.append(Wall(0, 0, 850, 0))
+    walls.append(Wall(0, 0, 800, 0))
 
     # Right Border
-    walls.append(Wall(1500, 0, 1500, 600))
+    walls.append(Wall(800, 0, 800, 600))
 
     # Bottom Border
-    walls.append(Wall(0, 600, 850, 600))
+    walls.append(Wall(0, 600, 800, 600))
 
     # Left Border
     walls.append(Wall(0, 0, 0, 600))
