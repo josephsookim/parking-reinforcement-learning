@@ -1,8 +1,10 @@
 import pygame
+from assets.models.Point import Point
 
 
 class Goal:
     def __init__(self, x1, y1, x2, y2):
+        self.pt = Point((x1 + x2) / 2, (y1 + y2) / 2)
         self.x1 = x1
         self.y1 = y1
 
