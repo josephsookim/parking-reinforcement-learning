@@ -1,54 +1,73 @@
 import pygame
+import gym
+import random
 
 from assets.models.Car import Car
 from assets.models.Ray import Ray
 from assets.models.Walls import Wall, getWalls
 from assets.models.Goals import Goal, getGoals
+from assets.utils.helpers import distance
 
 # CONSTANTS
 DRAW_WALLS = True
 DRAW_GOALS = True
 DRAW_RAYS = True
 
-GOAL_REWARD = 1000
+GOAL_REWARD = 50
 TIME_REWARD = -1
-CRASH_REWARD = -1000
+DISTANCE_REWARD = 5
+CRASH_REWARD = -10
 
 
 class ParkingEnv:
     def __init__(self):
         pygame.init()
 
-        self.fps = 120
-        self.width = 1500
-        self.height = 1000
+        self.fps = 10
+        self.width = 850
+        self.height = 600
 
         self.screen = pygame.display.set_mode((self.width, self.height))
         pygame.display.set_caption('Parking PPO')
-        self.action_space = None
+        self.action_space = gym.spaces.Discrete(8)
         self.observation_space = None
         self.score = 0
 
         self.walls = getWalls()
-        self.reset()
+        self.goals = getGoals()
 
     def reset(self):
         self.screen.fill((0, 0, 0))
         self.car = Car(50, 300)
-        self.goals = getGoals()
+        #self.goal = self.goals[random.randint(0, 71)]
+        self.goal = self.goals[0]
+        self.goal.active = True
         self.game_reward = 0
+        self.max_distance = distance(self.car.pt, self.goal.pt)
 
     def step(self, action):
         done = False
-        self.car.action(action)
+
+        action_mapping = {
+            0: 1,
+            1: 2,
+            2: 3,
+            3: 4,
+            4: 6,
+            5: 7,
+            6: 8,
+            7: 9
+        }
+
+        key = action_mapping[action]
+
+        self.car.action(key)
         self.car.update()
         reward = TIME_REWARD
 
-        for goal in self.goals:
-            if goal.active:
-                if self.car.score(goal):
-                    reward += GOAL_REWARD
-                    done = True
+        if self.car.score(self.goal):
+            reward += GOAL_REWARD
+            done = True
 
         # check if car crashed in the wall
         for wall in self.walls:
@@ -56,20 +75,25 @@ class ParkingEnv:
                 reward += CRASH_REWARD
                 done = True
 
+        # distance reward
+        current_distance = distance(self.car.pt, self.goal.pt)
+        normalized_distance = current_distance / self.max_distance
+        distance_reward = (1 - normalized_distance) * DISTANCE_REWARD
+        reward += distance_reward
+
         new_state = self.car.cast(self.walls)
         # normalize states
         if done:
+            self.goal.active = False
             new_state = None
 
         return new_state, reward, done
 
-    def render(self, action):
+    def render(self):
         pygame.time.delay(10)
 
         self.clock = pygame.time.Clock()
         self.screen.fill((0, 0, 0))
-
-        # self.screen.blit(self.back_image, self.back_rect)
 
         if DRAW_WALLS:
             for wall in self.walls:
