@@ -13,10 +13,10 @@ class Goal:
 
     def draw(self, win):
         pygame.draw.rect(win, (0, 255, 0), (self.x1, self.y1,
-                         self.x2 - self.x1, self.y2 - self.y1), 2)
+                         self.x2 - self.x1, self.y2 - self.y1))
         if self.active:
             pygame.draw.rect(win, (0, 255, 0), (self.x1, self.y1,
-                             self.x2 - self.x1, self.y2 - self.y1), 2)
+                             self.x2 - self.x1, self.y2 - self.y1))
 
 
 def getGoals():
