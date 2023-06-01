@@ -116,8 +116,8 @@ class Car:
     def cast(self, walls):
         self.rays = []
 
-        for i in range(0, 24):
-            self.rays.append(Ray(self.x, self.y, self.soll_angle + math.radians(15) * i))
+        for i in range(0, 8):
+            self.rays.append(Ray(self.x, self.y, self.soll_angle + math.radians(45) * i))
 
         observations = []
         self.closestRays = []
@@ -189,9 +189,9 @@ class Car:
         line1 = Line(Point(self.x, self.y), Point(
             self.x + vec.x, self.y + vec.y))
 
-        x1 = goal.x1 - 20
+        x1 = goal.x1 - 30
         y1 = goal.y1 - 20
-        x2 = goal.x2 + 20
+        x2 = goal.x2 + 30
         y2 = goal.y2 + 20
 
         x3 = line1.pt1.x - 5

@@ -11,9 +11,8 @@ import torch
 from ppo_pytorch import PPO
 
 TOTAL_GAMETIME = 1000  # Max game time for one episode
-N_EPISODES = 10000
+N_EPISODES = 100000
 REPLACE_TARGET = 50
-DIST_REWARD = 50
 
 game = ParkingEnv.ParkingEnv()
 game.fps = 30
@@ -22,11 +21,14 @@ GameTime = 0
 GameHistory = []
 renderFlag = True
 
-ppo_agent = PPO(state_dim=31, action_dim=game.action_space.n, lr_actor=0.0001, lr_critic=0.0001, gamma=0.99, K_epochs=20, eps_clip=0.2, has_continuous_action_space=False, action_std_init=0.6)
+ppo_agent = PPO(state_dim=15, action_dim=game.action_space.n, lr_actor=0.0001, lr_critic=0.0001, gamma=0.99, K_epochs=30, eps_clip=0.2, has_continuous_action_space=False, action_std_init=0.6)
 
 # if you want to load the existing model uncomment this line.
 # careful an existing model might be overwritten
-ppo_agent.load('model.h5')
+
+continue_train = True
+if continue_train:
+    ppo_agent.load('model.h5')
 
 ppo_scores = []
 
@@ -72,7 +74,7 @@ def run():
         if e % REPLACE_TARGET == 0 and e > REPLACE_TARGET:
             ppo_agent.policy_old.load_state_dict(ppo_agent.policy.state_dict())
 
-        if e % 100 == 0 and e > 10:
+        if e % 10 == 0 and e > 10:
             ppo_agent.save('model.h5')
             print("Saved model")
 

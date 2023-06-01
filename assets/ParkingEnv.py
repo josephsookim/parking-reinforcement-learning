@@ -13,12 +13,12 @@ DRAW_WALLS = True
 DRAW_GOALS = True
 DRAW_RAYS = True
 
-GOAL_REWARD = 1
+GOAL_REWARD = 10
 TIME_REWARD = -1
 CRASH_REWARD = -1
 SPIN_PENALTY = -1
 MAX_STEPS = 256
-DIST_REWARD = 1
+DIST_REWARD = 3
 DISTANCE_STEP_REWARD = 0.01
 
 
@@ -43,8 +43,8 @@ class ParkingEnv:
 
     def reset(self):
         self.screen.fill((0, 0, 0))
-        self.goal = self.goals[0]
-        #self.goal = self.goals[random.randint(0, 7)]
+        #self.goal = self.goals[0]
+        self.goal = self.goals[random.randint(0, 7)]
         self.car = Car(50, 300, self.goal.pt)
         self.goal.active = True
         self.game_reward = 0
@@ -85,7 +85,7 @@ class ParkingEnv:
         self.steps += 1
 
         # spin penalty
-        if abs(self.car.angle_change) >= 110 and self.car.angle_change != 0:
+        if abs(self.car.angle_change) >= 180 and self.car.angle_change != 0:
             reward += SPIN_PENALTY
             done = True
 

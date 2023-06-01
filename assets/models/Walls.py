@@ -20,29 +20,13 @@ class Wall:
 def getWalls():
     walls = []
 
-    # Upper Left Parking Lot
-    walls.append(Wall(200, 300, 600, 300))
-
     for i in range(200, 600 + 1, 100):
         # Top Side
-        walls.append(Wall(i, 300, i, 200))
+        walls.append(Wall(i, 0, i, 100))
 
         # Bottom Side
-        walls.append(Wall(i, 300, i, 400))
+        walls.append(Wall(i, 500, i, 600))
 
-    # Top Border
-    walls.append(Wall(0, 0, 800, 0))
-
-    # Right Border
-    walls.append(Wall(800, 0, 800, 600))
-
-    # Bottom Border
-    walls.append(Wall(0, 600, 800, 600))
-
-    # Left Border
-    walls.append(Wall(0, 0, 0, 600))
-
-    walls = []
     # Top Border
     walls.append(Wall(0, 0, 800, 0))
 
