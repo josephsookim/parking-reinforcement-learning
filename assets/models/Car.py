@@ -116,11 +116,12 @@ class Car:
     def cast(self, walls):
         self.rays = []
 
-        for i in range(0, 8):
-            self.rays.append(Ray(self.x, self.y, self.soll_angle + math.radians(45) * i))
+        for i in range(0, 24):
+            self.rays.append(Ray(self.x, self.y, self.soll_angle + math.radians(15) * i))
 
         observations = []
         self.closestRays = []
+        max_distance = 0  # Initialize the maximum distance
 
         for ray in self.rays:
             closest = None  # myPoint(0,0)
@@ -132,24 +133,26 @@ class Car:
                     if dist < record:
                         record = dist
                         closest = pt
-
             if closest:
                 # append distance for current ray
                 self.closestRays.append(closest)
                 observations.append(record)
-
+                if record > max_distance:
+                    max_distance = record
             else:
                 observations.append(1000)
 
         for i in range(len(observations)):
             # invert observation values 0 is far away 1 is close
-            observations[i] = ((1000 - observations[i]) / 1000)
+            observations[i] = ((max_distance - observations[i]) / max_distance)
 
         observations.append(self.vel / self.maxvel)
         observations.append(self.x)
         observations.append(self.y)
         observations.append(self.goal_pt.x)
         observations.append(self.goal_pt.y)
+        observations.append(self.angle)
+        observations.append(distance(self.pt, self.goal_pt))
 
         return observations
 
@@ -186,10 +189,10 @@ class Car:
         line1 = Line(Point(self.x, self.y), Point(
             self.x + vec.x, self.y + vec.y))
 
-        x1 = goal.x1 - 5
-        y1 = goal.y1 - 5
-        x2 = goal.x2 + 5
-        y2 = goal.y2 + 5
+        x1 = goal.x1 - 20
+        y1 = goal.y1 - 20
+        x2 = goal.x2 + 20
+        y2 = goal.y2 + 20
 
         x3 = line1.pt1.x - 5
         y3 = line1.pt1.y - 5

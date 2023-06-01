@@ -22,11 +22,11 @@ GameTime = 0
 GameHistory = []
 renderFlag = True
 
-ppo_agent = PPO(state_dim=13, action_dim=game.action_space.n, lr_actor=0.005, lr_critic=0.005, gamma=0.99, K_epochs=10, eps_clip=0.2, has_continuous_action_space=False, action_std_init=0.6)
+ppo_agent = PPO(state_dim=31, action_dim=game.action_space.n, lr_actor=0.0001, lr_critic=0.0001, gamma=0.99, K_epochs=20, eps_clip=0.2, has_continuous_action_space=False, action_std_init=0.6)
 
 # if you want to load the existing model uncomment this line.
 # careful an existing model might be overwritten
-#ppo_agent.load('model.h5')
+ppo_agent.load('model.h5')
 
 ppo_scores = []
 
@@ -50,13 +50,6 @@ def run():
             action = ppo_agent.select_action(observation)
             observation_, reward, done = game.step(action)
             observation_ = np.array(observation_)
-
-            if done:
-                # distance reward
-                current_distance = distance(game.car.pt, game.goal.pt)
-                normalized_distance = current_distance / game.max_distance
-
-                reward += (1 - normalized_distance) * DIST_REWARD
 
             if game.madeGoal:
                 hit_count += 1

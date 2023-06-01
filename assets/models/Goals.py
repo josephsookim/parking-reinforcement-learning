@@ -25,8 +25,8 @@ def getGoals():
     goals = []
 
     for i in range(200, 600, 100):
-        goals.append(Goal(i + 30, 220, i + 70, 280))
-        goals.append(Goal(i + 30, 320, i + 70, 380))
+        goals.append(Goal(i + 20, 220, i + 80, 280))
+        goals.append(Goal(i + 20, 320, i + 80, 380))
 
     print(len(goals))
 
