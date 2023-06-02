@@ -117,7 +117,8 @@ class Car:
         self.rays = []
 
         for i in range(0, 8):
-            self.rays.append(Ray(self.x, self.y, self.soll_angle + math.radians(45) * i))
+            self.rays.append(
+                Ray(self.x, self.y, self.soll_angle + math.radians(45) * i))
 
         observations = []
         self.closestRays = []
@@ -146,13 +147,9 @@ class Car:
             # invert observation values 0 is far away 1 is close
             observations[i] = ((max_distance - observations[i]) / max_distance)
 
-        observations.append(self.vel / self.maxvel)
         observations.append(self.x)
         observations.append(self.y)
-        observations.append(self.goal_pt.x)
-        observations.append(self.goal_pt.y)
         observations.append(self.angle)
-        observations.append(distance(self.pt, self.goal_pt))
 
         return observations
 

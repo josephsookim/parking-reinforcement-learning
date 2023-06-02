@@ -27,8 +27,8 @@ GameTime = 0
 GameHistory = []
 renderFlag = False
 
-ppo_agent = PPO(state_dim=15, action_dim=game.action_space.n, lr_actor=0.001, lr_critic=0.001,
-                gamma=0.99, K_epochs=5, eps_clip=0.2, has_continuous_action_space=False, action_std_init=0.6)
+ppo_agent = PPO(state_dim=11, action_dim=game.action_space.n, lr_actor=0.001, lr_critic=0.001,
+                gamma=0.99, K_epochs=20, eps_clip=0.2, has_continuous_action_space=False, action_std_init=0.6)
 
 # if you want to load the existing model uncomment this line.
 # careful an existing model might be overwritten
@@ -97,7 +97,7 @@ def run_game():
         if e % REPLACE_TARGET == 0 and e > REPLACE_TARGET:
             ppo_agent.policy_old.load_state_dict(ppo_agent.policy.state_dict())
 
-        if e % 10 == 0 and e > 10:
+        if e % 1000 == 0 and e > 10:
             ppo_agent.save('model.h5')
             print("Saved model")
 

@@ -43,8 +43,8 @@ class ParkingEnv:
 
     def reset(self):
         self.screen.fill((0, 0, 0))
-        # self.goal = self.goals[0]
-        self.goal = self.goals[random.randint(0, 7)]
+        self.goal = self.goals[2]
+        # self.goal = self.goals[random.randint(0, 7)]
         self.car = Car(50, 300, self.goal.pt)
         self.goal.active = True
         self.game_reward = 0
