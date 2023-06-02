@@ -19,7 +19,7 @@ CRASH_REWARD = -1
 SPIN_PENALTY = -1
 MAX_STEPS = 256
 DIST_REWARD = 3
-DISTANCE_STEP_REWARD = 0.01
+DISTANCE_STEP_REWARD = 0.05
 
 
 class ParkingEnv:
@@ -43,7 +43,7 @@ class ParkingEnv:
 
     def reset(self):
         self.screen.fill((0, 0, 0))
-        #self.goal = self.goals[0]
+        # self.goal = self.goals[0]
         self.goal = self.goals[random.randint(0, 7)]
         self.car = Car(50, 300, self.goal.pt)
         self.goal.active = True

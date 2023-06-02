@@ -23,7 +23,7 @@ class Car:
         self.height = 1
         self.points = 0
         self.dvel = 2
-        self.vel = 10
+        self.vel = 5
         self.velX = 0
         self.velY = 0
         self.maxvel = 10

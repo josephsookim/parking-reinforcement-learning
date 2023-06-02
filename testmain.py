@@ -10,6 +10,7 @@ import math
 import torch
 
 import matplotlib.pyplot as plt
+from threading import Thread
 
 TOTAL_GAMETIME = 1000  # Max game time for one episode
 N_EPISODES = 100000
@@ -19,38 +20,12 @@ episodes = []
 rewards = []
 hit_rates = []
 
-# Create a figure and axis for plotting
-fig, ax = plt.subplots()
-line1, = ax.plot([], [], label='Reward')
-line2, = ax.plot([], [], label='Loss')
-
-# Customize the plot
-ax.set_xlabel('Epoch')
-ax.set_ylabel('Average Reward')
-
-
-def update_plot(episode, reward, hit_rate):
-    episodes.append(episode)
-    rewards.append(reward)
-    hit_rates.append(hit_rate)
-
-    line1.set_data(episodes, rewards)
-    line2.set_data(episodes, hit_rates)
-    ax.relim()
-    ax.autoscale_view()
-    plt.draw()
-
-    print(f'episode {e}: {score}')
-    print(f'hit rate: {hit_count / (e+1) * 100}% | {hit_count} / {e+1}')
-    print('----')
-
-
 game = ParkingEnv.ParkingEnv()
 game.fps = 30
 
 GameTime = 0
 GameHistory = []
-renderFlag = True
+renderFlag = False
 
 ppo_agent = PPO(state_dim=15, action_dim=game.action_space.n, lr_actor=0.001, lr_critic=0.001,
                 gamma=0.99, K_epochs=5, eps_clip=0.2, has_continuous_action_space=False, action_std_init=0.6)
@@ -66,7 +41,22 @@ if continue_train:
 ppo_scores = []
 
 
-def run():
+def update_plot(episode, reward, hit_rate):
+    episodes.append(episode)
+    rewards.append(reward)
+    hit_rates.append(hit_rate)
+
+    plt.figure(1)
+    plt.clf()
+    plt.plot(episodes, rewards, label='Reward')
+    plt.plot(episodes, hit_rates, label='Hit Rate')
+    plt.xlabel('Epoch')
+    plt.ylabel('Average Reward')
+    plt.legend()
+    plt.pause(0.001)
+
+
+def run_game():
     hit_count = 0
     for e in range(N_EPISODES):
         game.reset()  # reset env
@@ -111,7 +101,25 @@ def run():
             ppo_agent.save('model.h5')
             print("Saved model")
 
-        update_plot(e, score, hit_count)
+        hit_rate = hit_count / (e+1) * 100
+        print(f'episode {e}: {score}')
+        print(f'hit rate: {hit_rate}% | {hit_count} / {e+1}')
+        print('----')
+
+        if e % 10 == 0:
+            update_plot(e, score, hit_rate)
+
+        plt.pause(0.001)
 
 
-run()
+# Initialize the plot
+plt.ion()
+plt.show()
+
+# Run the game loop on a separate thread
+game_thread = Thread(target=run_game)
+game_thread.start()
+
+# Run the matplotlib plot updates on the main thread
+while game_thread.is_alive():
+    plt.pause(0.001)
