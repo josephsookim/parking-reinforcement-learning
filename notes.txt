@@ -1,1 +1,6 @@
-130 - first goal
+PPO(state_dim=11, action_dim=game.action_space.n, lr_actor=0.001, lr_critic=0.001,
+                gamma=0.99, K_epochs=100, eps_clip=0.2, has_continuous_action_space=False, action_std_init=0.6)
+2%
+
+---
+

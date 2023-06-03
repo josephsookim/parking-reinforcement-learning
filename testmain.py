@@ -18,17 +18,17 @@ REPLACE_TARGET = 50
 
 episodes = []
 rewards = []
-hit_rates = []
+hit_counts = []
 
 game = ParkingEnv.ParkingEnv()
-game.fps = 30
+game.fps = 60
 
 GameTime = 0
 GameHistory = []
 renderFlag = False
 
-ppo_agent = PPO(state_dim=11, action_dim=game.action_space.n, lr_actor=0.001, lr_critic=0.001,
-                gamma=0.99, K_epochs=20, eps_clip=0.2, has_continuous_action_space=False, action_std_init=0.6)
+ppo_agent = PPO(state_dim=12, action_dim=game.action_space.n, lr_actor=0.0003, lr_critic=0.0003,
+                gamma=0.99, K_epochs=80, eps_clip=0.2, has_continuous_action_space=False, action_std_init=0.6)
 
 # if you want to load the existing model uncomment this line.
 # careful an existing model might be overwritten
@@ -41,15 +41,15 @@ if continue_train:
 ppo_scores = []
 
 
-def update_plot(episode, reward, hit_rate):
+def update_plot(episode, reward, hits):
     episodes.append(episode)
     rewards.append(reward)
-    hit_rates.append(hit_rate)
+    hit_counts.append(hits)
 
     plt.figure(1)
     plt.clf()
     plt.plot(episodes, rewards, label='Reward')
-    plt.plot(episodes, hit_rates, label='Hit Rate')
+    plt.plot(episodes, hit_counts, label='Hits')
     plt.xlabel('Epoch')
     plt.ylabel('Average Reward')
     plt.legend()
@@ -107,7 +107,7 @@ def run_game():
         print('----')
 
         if e % 10 == 0:
-            update_plot(e, score, hit_rate)
+            update_plot(e, score, hit_count)
 
         plt.pause(0.001)
 

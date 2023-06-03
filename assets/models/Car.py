@@ -150,6 +150,7 @@ class Car:
         observations.append(self.x)
         observations.append(self.y)
         observations.append(self.angle)
+        observations.append(distance(self.pt, self.goal_pt))
 
         return observations
 

@@ -40,20 +40,16 @@ def update_plot(episode, reward, hit_rate):
     ax.autoscale_view()
     plt.draw()
 
-    print(f'episode {e}: {score}')
-    print(f'hit rate: {hit_count / (e+1) * 100}% | {hit_count} / {e+1}')
-    print('----')
-
 
 game = ParkingEnv.ParkingEnv()
 game.fps = 30
 
 GameTime = 0
 GameHistory = []
-renderFlag = True
+renderFlag = False
 
-ppo_agent = PPO(state_dim=15, action_dim=game.action_space.n, lr_actor=0.001, lr_critic=0.001,
-                gamma=0.99, K_epochs=5, eps_clip=0.2, has_continuous_action_space=False, action_std_init=0.6)
+ppo_agent = PPO(state_dim=12, action_dim=game.action_space.n, lr_actor=0.0003, lr_critic=0.0003,
+                gamma=0.99, K_epochs=80, eps_clip=0.2, has_continuous_action_space=False, action_std_init=0.6)
 
 # if you want to load the existing model uncomment this line.
 # careful an existing model might be overwritten
@@ -110,6 +106,10 @@ def run():
         if e % 10 == 0 and e > 10:
             ppo_agent.save('model.h5')
             print("Saved model")
+
+        print(f'episode {e}: {score}')
+        print(f'hit rate: {hit_count / (e+1) * 100}% | {hit_count} / {e+1}')
+        print('----')
 
         update_plot(e, score, hit_count)
 
