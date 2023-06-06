@@ -55,25 +55,21 @@ class Car:
         self.distances = []
 
     def action(self, choice: int):
-        match choice:
-            case 4:
-                self.turn(-1)
-                self.angle_change -= 15
-
-            case 6:
-                self.turn(1)
-                self.angle_change += 15
-
-            case _:
-                pass
-
+        if choice == 4:
+            self.turn(-1)
+            self.angle_change -= 15
+        elif choice == 6:
+            self.turn(1)
+            self.angle_change += 15
+        else:
+            pass
         '''
-        case 8:
+        elif choice == 8:
             self.accelerate(self.dvel)
-
-        case 2:
+        elif choice == 2:
             self.accelerate(-self.dvel)
         '''
+
 
     def accelerate(self, dvel):
         self.vel += dvel
