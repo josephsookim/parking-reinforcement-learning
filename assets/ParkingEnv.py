@@ -151,5 +151,5 @@ class ParkingEnv:
         self.clock.tick(self.fps)
         pygame.display.update()
 
-    def close():
+    def close(self):
         pygame.quit()
