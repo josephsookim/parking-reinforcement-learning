@@ -3,7 +3,6 @@ import math
 from assets.models.Point import Point
 from assets.utils.helpers import rotate
 
-
 class Ray:
     def __init__(self, x, y, angle):
         self.x = x

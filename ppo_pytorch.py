@@ -41,42 +41,35 @@ class ActorCritic(nn.Module):
 
         self.has_continuous_action_space = has_continuous_action_space
 
+        layers = [
+            nn.Linear(state_dim, 128),
+            nn.ReLU(),
+            nn.Linear(128, 128),
+            nn.ReLU(),
+            nn.Linear(128, 128),
+            nn.ReLU()
+        ]
+
         if has_continuous_action_space:
             self.action_dim = action_dim
             self.action_var = torch.full(
                 (action_dim,), action_std_init * action_std_init).to(device)
-
-        if has_continuous_action_space:
-            self.actor = nn.Sequential(
-                nn.Linear(state_dim, 128),
-                nn.Tanh(),
-                nn.Linear(128, 128),
-                nn.Tanh(),
-                nn.Linear(128, 64),
-                nn.Tanh(),
-                nn.Linear(64, action_dim),
-                nn.Tanh()
-            )
+            layers.append(nn.Linear(128, action_dim))
+            layers.append(nn.ReLU())  # Assuming continuous actions are in the range [-1, 1]
         else:
-            self.actor = nn.Sequential(
-                nn.Linear(state_dim, 128),
-                nn.Tanh(),
-                nn.Linear(128, 128),
-                nn.Tanh(),
-                nn.Linear(128, 64),
-                nn.Tanh(),
-                nn.Linear(64, action_dim),
-                nn.Softmax(dim=-1)
-            )
+            layers.append(nn.Linear(128, action_dim))
+            layers.append(nn.Softmax(dim=-1))
+
+        self.actor = nn.Sequential(*layers)
 
         self.critic = nn.Sequential(
             nn.Linear(state_dim, 128),
-            nn.Tanh(),
+            nn.ReLU(),
             nn.Linear(128, 128),
-            nn.Tanh(),
-            nn.Linear(128, 64),
-            nn.Tanh(),
-            nn.Linear(64, 1)
+            nn.ReLU(),
+            nn.Linear(128, 128),
+            nn.ReLU(),
+            nn.Linear(128, 1)
         )
 
     def set_action_std(self, new_action_std):
@@ -139,7 +132,8 @@ class PPO:
 
         if has_continuous_action_space:
             self.action_std = action_std_init
-
+        self.lr_actor = lr_actor
+        self.lr_critic = lr_critic
         self.gamma = gamma
         self.eps_clip = eps_clip
         self.K_epochs = K_epochs

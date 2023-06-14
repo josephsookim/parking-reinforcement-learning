@@ -1,6 +1,6 @@
 from assets import ParkingEnv
 from assets.utils.helpers import distance
-from ppo_pytorch import PPO
+from ddqn import DDQN
 
 import pygame
 import numpy as np
@@ -13,7 +13,7 @@ import matplotlib.pyplot as plt
 from threading import Thread
 
 TOTAL_GAMETIME = 1000  # Max game time for one episode
-N_EPISODES = 100000
+N_EPISODES = 100
 REPLACE_TARGET = 50
 
 episodes = []
@@ -27,18 +27,17 @@ GameTime = 0
 GameHistory = []
 renderFlag = False
 
-ppo_agent = PPO(state_dim=12, action_dim=game.action_space.n, lr_actor=0.0001, lr_critic=0.0001,
-                gamma=0.99, K_epochs=80, eps_clip=0.2, has_continuous_action_space=False, action_std_init=0.6)
+ddqn_agent = DDQN(state_dim=12, action_dim=game.action_space.n, lr=0.0001, gamma=0.99, batch_size=64)
 
 # if you want to load the existing model uncomment this line.
 # careful an existing model might be overwritten
 
 continue_train = False
 if continue_train:
-    ppo_agent.load('model.h5')
+    ddqn_agent.load('ddqn_model.h5')
     print('model loaded')
 
-ppo_scores = []
+ddqn_scores = []
 
 
 def update_plot(episode, reward, hits):
@@ -72,7 +71,7 @@ def run_game():
                 if event.type == pygame.QUIT:
                     return
 
-            action = ppo_agent.select_action(observation)
+            action = ddqn_agent.select_action(observation)
             observation_, reward, done = game.step(action)
             observation_ = np.array(observation_)
 
@@ -81,24 +80,23 @@ def run_game():
 
             score += reward
 
-            ppo_agent.buffer.rewards.append(reward)
-            ppo_agent.buffer.is_terminals.append(done)
+            ddqn_agent.remember(observation, action, reward, observation_, done)
 
             observation = observation_
 
             if renderFlag:
                 game.render()
 
-        ppo_agent.update()
+        ddqn_agent.learn()
 
-        ppo_scores.append(score)
-        avg_score = np.mean(ppo_scores[max(0, e-100):(e+1)])
+        ddqn_scores.append(score)
+        avg_score = np.mean(ddqn_scores[max(0, e - 100):(e + 1)])
 
         if e % REPLACE_TARGET == 0 and e > REPLACE_TARGET:
-            ppo_agent.policy_old.load_state_dict(ppo_agent.policy.state_dict())
+            ddqn_agent.update_network_parameters()
 
         if e % 1000 == 0 and e > 10:
-            ppo_agent.save('model.h5')
+            ddqn_agent.save('ddqn_model.h5')
             print("Saved model")
 
         hit_rate = hit_count / (e+1) * 100
@@ -118,4 +116,4 @@ plt.show()
 
 # Run the game loop and matplotlib plot updates on the main thread
 run_game()
-
+plt.savefig("ddqn.png")
